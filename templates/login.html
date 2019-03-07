@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Naamloos document</title>
+	<script src="https://cdn.servenow.nl/assets/js/jquery/jquery-1.12.4.min.js" ></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.0.3/fingerprint2.min.js'></script>
+	<script src='https://cdn.servenow.nl/sfe/src/utils/fe_cookie-min.js'></script>
+</head>
+
+<body>
+	<div>Referer : <span class='referrer'></span></div>
+	<div id='xbody' >
+		<form style='' method="post" id="submit">
+			<input type="text" name="login" autocomplete="username">
+			<input type="password" name="password" autocomplete="current-password" >
+			<input type="hidden" name="fprint" value="">
+
+			<input type="submit" name="submit" value="login">
+		</form>
+	</div>
+
+	<div>
+		<ul>
+			<li><a href=''>github</a></li>
+			<li><a href=''>google</a></li>
+		</ul>
+	</div>
+
+
+<script>
+
+
+$(document).ready(function(){
+
+
+
+
+
+
+
+	if (window.requestIdleCallback) {
+		requestIdleCallback(function () {
+			Fingerprint2.get(function (components) {
+			  console.log(components) // an array of components: {key: ..., value: ...}
+				var values = components.map(function (component) { return component.value })
+				var murmur = Fingerprint2.x64hash128(values.join(''), 31);
+				$('form#submit').css('display','block');
+				//alert('C: '+murmur);
+				$('input#fprint').val(murmur);
+
+				if(Cookies.get('SID')!=='undefined'){
+					//$('#xbody').css('display','none');
+
+				}
+				//document.getElementById("xbody").innerHTML = formHtml(murmur);
+				$("#submit").submit(function(e){
+					e.preventDefault();
+					//alert("submit1");
+					login();
+				});
+
+
+
+			})
+		})
+	} else {
+		setTimeout(function () {
+			Fingerprint2.get(function (components) {
+			  console.log(components) // an array of components: {key: ..., value: ...}
+				//elem = document.getElementById('para');
+
+				var values = components.map(function (component) { return component.value })
+				var murmur = Fingerprint2.x64hash128(values.join(''), 31);
+				$('form#submit').css('display','block');
+				$('input#fprint').val(murmur);
+
+
+				if(Cookies.get('SID')!=='undefined'){
+					//$('#xbody').css('display','none');
+				}
+				//document.getElementById("xbody").innerHTML = formHtml(murmur);
+				$("#submit").submit(function(e){
+					e.preventDefault();
+					//alert("submit1");
+					login();
+				});
+
+			})
+		}, 500)
+	}
+
+
+
+
+
+
+
+
+});
+
+
+
+
+
+function login(){
+
+
+	console.log("Login:");
+
+	$.ajax({
+		url: "/login",
+		method: 'post',
+		data: $('form').serialize(),
+		beforeSend: function( xhr ) {
+			/*xhr.overrideMimeType( "text/plain; charset=x-user-defined" );*/
+		},
+		statusCode: {
+			404: function(jqXHR, textStatus ) {
+			  alert( "Login: page not found" );
+			},
+			403: function(jqXHR, textStatus ) {
+			  	alert( "Login: Forbidden" );
+				// user disabled?
+			},
+			401: function(jqXHR, textStatus ) {
+
+			  	alert( jqXHR.responseJSON.error+ " "+ jqXHR.responseJSON.error_description );
+				console.log(jqXHR.responseJSON);
+			},
+		}
+	}).fail(function( jqXHR, textStatus ) {
+		console.log('Login: login fail');
+		console.log(jqXHR);
+
+	}).done(function( data,jqxhr ) {
+    	console.log('Login: login done');
+
+		if ( console && console.log ) {
+      		console.log( data);
+			//$('body').html(data);
+
+			data.access_token
+			data.expires_in
+			data.refresh_token
+			data.scope
+			data.token_type
+
+
+			console.log('set cookies.');
+			var expireTime = new Date(new Date().getTime() + data.expires_in * 1000);
+			Cookies.set('SID',data.access_token , {expires: expireTime});
+			Cookies.set('SRID',data.refresh_token);
+
+			// redirect
+			window.location.reload();
+			//
+
+
+
+    	}
+	});
+
+
+
+}
+
+
+</script>
+</body>
+</html>
