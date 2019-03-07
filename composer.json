@@ -1,0 +1,25 @@
+{
+    "name": "botnyx/sfe-auth-base",
+    "description": "shared .",
+    "keywords": ["sfe", "composer", "package"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Jerry Hopper",
+            "email": "hopper.jerry@gmail.com"
+        }
+    ],
+    "type": "package",
+    "require": {
+		    "php": ">=7.1",
+        "botnyx/sfe-shared-core": "dev-master as 0.1"
+    },
+    "require-dev": {
+		    "phpunit/phpunit": "6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Botnyx\\Sfe\\Auth\\Base\\": "src/"
+        }
+    }
+}
