@@ -1,0 +1,179 @@
+{
+	"variables": [],
+	"info": {
+		"name": "OAuth 2.0",
+		"_postman_id": "07d7974c-990c-b18f-9ae6-e41db1d1dfc1",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authorization Code Grant",
+			"description": "",
+			"item": [
+				{
+					"name": "Request Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var data = JSON.parse(responseBody);\nif ('access_token' in data) {\n    postman.setEnvironmentVariable('access_token', data.access_token);\n}\nif ('refresh_token' in data) {\n    postman.setEnvironmentVariable('refresh_token', data.refresh_token);\n}"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}{{tokenEndpoint}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "{{clientId}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_secret",
+									"value": "{{clientSecret}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "code",
+									"value": "{{authorizationCode}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirectUri}}",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client Credentials Grant",
+			"description": "",
+			"item": [
+				{
+					"name": "Request access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var data = JSON.parse(responseBody);\nif ('access_token' in data) {\n    postman.setEnvironmentVariable('access_token', data.access_token);\n}"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}{{tokenEndpoint}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "scope",
+									"value": "{{scope}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "{{clientId}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_secret",
+									"value": "{{clientSecret}}",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Refresh access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\nif ('access_token' in data) {\n    postman.setEnvironmentVariable('access_token', data.access_token);\n}"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}{{tokenEndpoint}}",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refresh_token}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
